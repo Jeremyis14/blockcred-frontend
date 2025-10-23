@@ -1,0 +1,16 @@
+# Block all web crawlers from private pages
+User-agent: *
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /api/
+Disallow: /admin/
+
+# Allow access to public pages
+Allow: /
+
+# Link to sitemap for better indexing
+Sitemap: https://blockcred-sui.com/sitemap.xml
+
+# Crawl-delay can be used if you want to reduce server load (optional)
+# Crawl-delay: 10

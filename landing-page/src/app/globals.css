@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.blockcred-color{
+   color:#3E4095;
+}
+
+/* Loader overlay styles */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  z-index: 9999;
+}
+
+/* Dark mode background for loader */
+.dark .loader-overlay {
+  background: #0b0d14;
+}
+
+.loader-inner {
+  display: grid;
+  place-items: center;
+  gap: 16px;
+}
+
+/* Simulate the "B" forming by revealing the PNG from left to right */
+@keyframes drawReveal {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.reveal-mask {
+  overflow: hidden;
+  /* Start fully masked from the right, reveal to the left */
+  clip-path: inset(0 100% 0 0);
+  animation: drawReveal 900ms ease-out forwards;
+}
+
+/* Optional subtle fade out to avoid popping when unmounting */
+@keyframes fadeOutQuick {
+  to { opacity: 0; }
+}
+.fade-out-quick {
+  animation: fadeOutQuick 200ms ease forwards;
+}
