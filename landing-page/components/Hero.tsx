@@ -12,7 +12,7 @@ const TRUST_LOGOS = [
   "/brands/mckesson.png",
 ];
 
-export default function Hero(): JSX.Element {
+export default function Hero(): React.JSX.Element {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
