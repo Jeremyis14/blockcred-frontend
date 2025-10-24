@@ -60,7 +60,7 @@ export default function Hero(): React.JSX.Element {
 
               <div className="flex flex-wrap items-center justify-center gap-3 mt-8 sm:justify-start">
                 <Link
-                  href="/signup"
+                  href="/sign-up"
                   className="inline-flex items-center rounded-full px-5 py-3 text-sm text-white shadow-sm transform-gpu transition hover:scale-[1.02]  sm:w-auto justify-center"
                   style={{ background: `linear-gradient(135deg, ${THEME} 0%, #5a57d9 100%)` }}
                 >
