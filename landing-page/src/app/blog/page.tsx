@@ -1,4 +1,4 @@
-import BlogIndex from '@/app/Blog'
+import BlogIndex from '../Blog'
 import React from 'react'
 
 const Blog = () => {
