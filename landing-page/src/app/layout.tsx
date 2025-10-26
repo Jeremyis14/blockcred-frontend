@@ -27,9 +27,7 @@ const openSans = DM_Sans({
 });
 export const metadata: Metadata = {
   title: "Blockcred",
-  description: "Next Generation credential management platform",
   icons:{
-    icon: "/darkicon.png"
   }
 };
 

@@ -14,6 +14,11 @@ import {
   LogOut,
   Plus,
   X as CloseIcon,
+  Clock,
+  Code,
+  Monitor,
+  FileText,
+  BarChart3,
 } from "lucide-react";
 
 const THEME = "#3E4095";
@@ -61,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="relative hidden sm:block" ref={menuRef}>
               <button onClick={() => setMenuOpen((v)=>!v)} className="grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]">
                 <span className="sr-only">Open user menu</span>
-                <Image src="/darkicon.png" alt="Avatar" width={30} height={30} />
+                <Image src="/normalguy.jpg" alt="Avatar" width={30} height={30} />
               </button>
               {menuOpen && (
                 <div className="absolute right-0 mt-2 w-40 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
@@ -124,7 +129,12 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
     { label: "Overview", href: "/dashboard", icon: (<LayoutGrid className="h-5 w-5 lg:h-4 lg:w-4" />)},
     { label: "Credentials", href: "/dashboard/credentials", icon: (<IdCard className="h-5 w-5 lg:h-4 lg:w-4" />)},
     { label: "Verifications", href: "/dashboard/verifications", icon: (<ShieldCheck className="h-5 w-5 lg:h-4 lg:w-4" />)},
+    { label: "Templates", href: "/dashboard/credential-templates", icon: (<FileText className="h-5 w-5 lg:h-4 lg:w-4" />)},
+    { label: "Analytics", href: "/dashboard/analytics", icon: (<BarChart3 className="h-5 w-5 lg:h-4 lg:w-4" />)},
     { label: "API Keys", href: "/dashboard/api-keys", icon: (<KeySquare className="h-5 w-5 lg:h-4 lg:w-4" />)},
+    { label: "Audit Log", href: "/dashboard/audit-log", icon: (<Clock className="h-5 w-5 lg:h-4 lg:w-4" />)},
+    { label: "API Playground", href: "/dashboard/api-playground", icon: (<Code className="h-5 w-5 lg:h-4 lg:w-4" />)},
+    { label: "Device Management", href: "/dashboard/device-management", icon: (<Monitor className="h-5 w-5 lg:h-4 lg:w-4" />)},
     { label: "Settings", href: "/dashboard/settings", icon: (<SettingsIcon className="h-5 w-5 lg:h-4 lg:w-4" />)},
   ];
 

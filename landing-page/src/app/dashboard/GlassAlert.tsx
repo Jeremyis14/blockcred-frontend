@@ -8,9 +8,10 @@ type GlassAlertProps = {
   message?: string;
   onClose?: () => void;
   variant?: "error" | "info" | "success";
+  primaryAction?: { label: string; onClick: () => void };
 };
 
-export default function GlassAlert({ open, title = "Something went wrong", message, onClose, variant = "error" }: GlassAlertProps) {
+export default function GlassAlert({ open, title = "Something went wrong", message, onClose, variant = "error", primaryAction }: GlassAlertProps) {
   if (!open) return null;
   const color = variant === "error" ? "#dc2626" : variant === "success" ? "#16a34a" : "#3E4095";
   const vignette = variant === "error" ? "rgba(220,38,38,0.3)" : variant === "success" ? "rgba(22,163,74,0.28)" : "rgba(62,64,149,0.25)";
@@ -43,7 +44,11 @@ export default function GlassAlert({ open, title = "Something went wrong", messa
         </div>
         <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button onClick={onClose} className="w-full rounded-full bg-white/10 px-4 py-2 text-sm hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:w-auto">Dismiss</button>
-          <button onClick={onClose} className="w-full rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:w-auto">Okay</button>
+          {primaryAction ? (
+            <button onClick={primaryAction.onClick} className="w-full rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:w-auto">{primaryAction.label}</button>
+          ) : (
+            <button onClick={onClose} className="w-full rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:w-auto">Okay</button>
+          )}
         </div>
       </div>
     </div>

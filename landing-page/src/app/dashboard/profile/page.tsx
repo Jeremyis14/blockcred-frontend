@@ -13,15 +13,25 @@ export default function ProfilePage() {
   const [form, setForm] = useState({ name: "Jane Doe", email: "jane@example.com", org: "Blockcred" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"}>({open:false, title:"", msg:"", variant:"success"});
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError(null);
-    setTimeout(() => {
-      setSaving(false);
-      setError("Even blockchains need a database. Our hamster-powered backend tripped over a cable.");
-    }, 900);
+    setOverlay({open:false, title:"", msg:""});
+    // Simulate validation
+    if (form.name.trim() && form.email.trim()) {
+      setTimeout(() => {
+        setSaving(false);
+        setOverlay({open:true, title:"Profile saved", msg:"Your changes have been updated.", variant:"success"});
+      }, 900);
+    } else {
+      setTimeout(() => {
+        setSaving(false);
+        setError("Please fill in all required fields.");
+      }, 900);
+    }
   }
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -32,6 +42,7 @@ export default function ProfilePage() {
         onClose={() => setError(null)}
         variant="error"
       />
+      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg} variant={overlay.variant} onClose={()=>setOverlay(o=>({...o,open:false}))} />
       {/* Header banner */}
       <header className="rounded-2xl bg-gradient-to-r from-[#3E4095] to-[#5a57d9] p-4 text-white shadow-sm">
         <div className="flex items-center gap-3">

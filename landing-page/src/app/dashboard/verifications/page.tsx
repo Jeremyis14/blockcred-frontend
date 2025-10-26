@@ -2,15 +2,29 @@
 import React, { useState } from "react";
 import { ShieldCheck, RefreshCw, Search, Filter, ChevronDown, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
 import GlassAlert from "../GlassAlert";
+import SavedViews from "../SavedViews";
 
 export default function VerificationsPage() {
   const [error, setError] = useState<string | null>(null);
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
   function simulateRefreshError() {
     setTimeout(() => setError("Our verifier took a coffee break. It promises to return stronger."), 350);
   }
+  const handleApplyFilters = (filters: Record<string, string>) => {
+    setAppliedFilters(filters);
+    // Simulate applying filters
+    alert(`Applying filters: ${JSON.stringify(filters)}`);
+  };
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <GlassAlert open={!!error} title="Refresh failed" message={error ?? undefined} onClose={() => setError(null)} variant="error" />
+      <GlassAlert
+        open={!!error}
+        title="Refresh failed"
+        message={error ?? undefined}
+        variant="error"
+        onClose={() => setError(null)}
+        primaryAction={{ label: "Retry", onClick: () => { setError(null); alert("Refreshing verifications..."); } }}
+      />
       <header className="rounded-2xl bg-gradient-to-r from-[#3E4095] to-[#5a57d9] p-4 text-white shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -27,6 +41,8 @@ export default function VerificationsPage() {
           </button>
         </div>
       </header>
+
+      <SavedViews onApply={handleApplyFilters} />
 
       <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
         {/* Search + filters */}

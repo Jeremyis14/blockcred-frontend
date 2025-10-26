@@ -2,15 +2,34 @@
 import React, { useState } from "react";
 import { IdCard, Plus, Upload, Filter, ChevronDown, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import GlassAlert from "../GlassAlert";
+import SavedViews from "../SavedViews";
 
 export default function CredentialsPage() {
   const [error, setError] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"}>({open:false, title:"", msg:"", variant:"success"});
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
   function simulateImportError() {
     setTimeout(() => setError("CSV parser choked on vibes and commas. Try feeding it fewer mysteries."), 400);
   }
+  function simulateIssue() {
+    setOverlay({open:true, title:"Credential issued", msg:"Blockchain 101 sent to recipient.", variant:"success"});
+  }
+  const handleApplyFilters = (filters: Record<string, string>) => {
+    setAppliedFilters(filters);
+    // Simulate applying filters
+    alert(`Applying filters: ${JSON.stringify(filters)}`);
+  };
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <GlassAlert open={!!error} title="Import failed" message={error ?? undefined} onClose={()=>setError(null)} variant="error" />
+      <GlassAlert
+        open={!!error}
+        title="Import failed"
+        message={error ?? undefined}
+        variant="error"
+        onClose={() => setError(null)}
+        primaryAction={{ label: "Retry", onClick: () => { setError(null); alert("Retrying import..."); } }}
+      />
+      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg} variant={overlay.variant} onClose={()=>setOverlay(o=>({...o,open:false}))} />
       <header className="rounded-2xl bg-gradient-to-r from-[#3E4095] to-[#5a57d9] p-4 text-white shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
@@ -24,11 +43,13 @@ export default function CredentialsPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={simulateImportError} className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Upload className="h-4 w-4" /> Import CSV</button>
-            <button className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] shadow hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Plus className="h-4 w-4" /> Issue</button>
+            <button onClick={simulateIssue} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] shadow hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Plus className="h-4 w-4" /> Issue</button>
             <button className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Filter className="h-4 w-4" /> Filters <ChevronDown className="h-4 w-4" /></button>
           </div>
         </div>
       </header>
+
+      <SavedViews onApply={handleApplyFilters} />
 
       <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
         {/* Search + filters */}
