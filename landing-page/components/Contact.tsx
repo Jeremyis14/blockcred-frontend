@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import GlassAlert from "../src/app/dashboard/GlassAlert";
 
 const THEME = "#3E4095";
 
@@ -15,6 +16,7 @@ export default function Contact() {
   const [errors, setErrors] = useState<Partial<FormState>>({});
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
+  const [alert, setAlert] = useState<{open:boolean; title:string; message?:string; variant?:"error"|"success"|"info"|"warning"}>({open:false, title:""});
 
   // reveal-on-scroll refs
   const formRef = useRef<HTMLDivElement | null>(null);
@@ -66,6 +68,7 @@ export default function Contact() {
       if (res.ok) {
         setStatus("success");
         setForm({ name: "", email: "", subject: "", message: "" });
+        setAlert({ open: true, title: "Message sent", message: "Thanks — we'll get back to you soon.", variant: "success" });
       } else {
         throw new Error("API unavailable");
       }
@@ -75,6 +78,7 @@ export default function Contact() {
       const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`);
       window.location.href = `mailto:info@blockcred.com?subject=${subject}&body=${body}`;
       setStatus("success");
+      setAlert({ open: true, title: "Opening mail app", message: "We couldn't reach the API, so we opened your mail app as a fallback.", variant: "info" });
     } finally {
       setSubmitting(false);
       // clear success message after a few seconds so user can submit again
@@ -86,6 +90,14 @@ export default function Contact() {
 
   return (
     <section className="py-16 bg-white dark:bg-slate-950" id="contact" aria-labelledby="contact-heading">
+      <GlassAlert
+        open={alert.open}
+        title={alert.title}
+        message={alert.message}
+        variant={alert.variant}
+        onClose={() => setAlert(a=>({ ...a, open:false }))}
+        position="bottom-right"
+      />
       <div className="px-6 mx-auto max-w-7xl">
         <div className="max-w-3xl mx-auto text-center">
           <h2 id="contact-heading" className="text-3xl font-medium text-gray-900 dark:text-slate-100 sm:text-4xl">
@@ -115,7 +127,7 @@ export default function Contact() {
                       errors.name ? "border-red-300" : "border-gray-200 dark:border-slate-800"
                     }`}
                     placeholder="Your full name"
-                    aria-invalid={!!errors.name}
+                    
                     aria-describedby={errors.name ? "name-error" : undefined}
                   />
                   {errors.name && <span id="name-error" className="mt-1 text-xs text-red-600">{errors.name}</span>}
@@ -132,7 +144,7 @@ export default function Contact() {
                       errors.email ? "border-red-300" : "border-gray-200 dark:border-slate-800"
                     }`}
                     placeholder="you@example.com"
-                    aria-invalid={!!errors.email}
+                    
                     aria-describedby={errors.email ? "email-error" : undefined}
                   />
                   {errors.email && <span id="email-error" className="mt-1 text-xs text-red-600">{errors.email}</span>}
@@ -150,7 +162,7 @@ export default function Contact() {
                     errors.subject ? "border-red-300" : "border-gray-200 dark:border-slate-800"
                   }`}
                   placeholder="What is this about?"
-                  aria-invalid={!!errors.subject}
+                  
                   aria-describedby={errors.subject ? "subject-error" : undefined}
                 />
                 {errors.subject && <span id="subject-error" className="mt-1 text-xs text-red-600">{errors.subject}</span>}
@@ -167,7 +179,7 @@ export default function Contact() {
                     errors.message ? "border-red-300" : "border-gray-200 dark:border-slate-800"
                   }`}
                   placeholder="How can we help?"
-                  aria-invalid={!!errors.message}
+                  
                   aria-describedby={errors.message ? "message-error" : undefined}
                 />
                 {errors.message && <span id="message-error" className="mt-1 text-xs text-red-600">{errors.message}</span>}
@@ -219,35 +231,41 @@ export default function Contact() {
 
               <dl className="mt-6 space-y-4 text-sm text-gray-700 dark:text-slate-300">
                 <div className="flex gap-3">
-                  <svg className="w-5 h-5 text-gray-400 dark:text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M2 7a2 2 0 0 1 2-2h3l2 3h6l2-3h3a2 2 0 0 1 2 2v2a14 14 0 0 1-14 14A14 14 0 0 1 2 9V7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <div>
+                  <dt aria-label="Email icon">
+                    <svg className="w-5 h-5 text-gray-400 dark:text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M2 7a2 2 0 0 1 2-2h3l2 3h6l2-3h3a2 2 0 0 1 2 2v2a14 14 0 0 1-14 14A14 14 0 0 1 2 9V7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </dt>
+                  <dd>
                     <div className="font-medium text-gray-900 dark:text-slate-100">Email</div>
                     <a href="mailto:info@blockcred.com" className="text-gray-600 dark:text-slate-300 hover:underline">info@blockcred.com</a>
-                  </div>
+                  </dd>
                 </div>
 
                 <div className="flex gap-3">
-                  <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M2 8.5v7A3.5 3.5 0 0 0 5.5 19h13A3.5 3.5 0 0 0 22 15.5v-7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M16 3v4M8 3v4M3 9h18" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <div>
+                  <dt aria-label="Calendar icon">
+                    <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M2 8.5v7A3.5 3.5 0 0 0 5.5 19h13A3.5 3.5 0 0 0 22 15.5v-7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16 3v4M8 3v4M3 9h18" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </dt>
+                  <dd>
                     <div className="font-medium text-gray-900 dark:text-slate-100">Phone</div>
                     <a href="tel:+2349191495536" className="text-gray-600 dark:text-slate-300 hover:underline">+234 91 9149 5536</a>
-                  </div>
+                  </dd>
                 </div>
 
                 <div className="flex gap-3">
-                  <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <div>
+                  <dt aria-label="Location icon">
+                    <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </dt>
+                  <dd>
                     <div className="font-medium text-gray-900 dark:text-slate-100">Address</div>
                     <div className="text-gray-600 dark:text-slate-300">Port Harcourt, Rivers State, Nigeria</div>
-                  </div>
+                  </dd>
                 </div>
               </dl>
 

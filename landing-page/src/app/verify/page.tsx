@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { ShieldCheck, Search, Copy, Download, Share, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
+import GlassAlert from "../dashboard/GlassAlert";
 
 export default function VerifyPage() {
   const [credentialId, setCredentialId] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"}>({open:false, title:"", msg:"", variant:"success"});
   const [result, setResult] = useState<{
     valid: boolean;
     details?: {
@@ -25,8 +27,10 @@ export default function VerifyPage() {
     // Simulate API call
     setTimeout(() => {
       if (credentialId.toLowerCase().includes("invalid")) {
+        setOverlay({open:true, title:"Verification failed", msg:"Credential not found or invalid.", variant:"error"});
         setResult({ valid: false });
       } else {
+        setOverlay({open:true, title:"Verification successful", msg:"Credential verified on the blockchain.", variant:"success"});
         setResult({
           valid: true,
           details: {
@@ -51,6 +55,7 @@ export default function VerifyPage() {
 
   return (
     <div className="min-h-[100dvh] bg-gray-50 dark:bg-slate-950">
+      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg}autoClose={2600} variant={overlay.variant} onClose={()=>setOverlay(o=>({...o,open:false}))} />
       {/* Header */}
       <header className="border-b border-gray-100 bg-white dark:border-slate-800 dark:bg-slate-900">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">

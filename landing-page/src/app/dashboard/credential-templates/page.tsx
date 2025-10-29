@@ -15,7 +15,19 @@ export default function CredentialTemplatesPage() {
   ];
 
   const simulateDelete = (templateName: string) => {
-    setError(`Delete failed: ${templateName} is in use.`);
+    if (Math.random() > 0.5) {
+      setError(`Delete failed: ${templateName} is in use.`);
+    } else {
+      setOverlay({open:true, title:"Template deleted", msg:`Deleted ${templateName} template.`, variant:"success"});
+    }
+  };
+
+  const handleEdit = (templateName: string) => {
+    setOverlay({open:true, title:"Template edited", msg:`Editing ${templateName} template.`, variant:"success"});
+  };
+
+  const handlePreview = (templateName: string) => {
+    setOverlay({open:true, title:"Template previewed", msg:`Previewing ${templateName} design.`, variant:"success"});
   };
 
   const simulateCreate = () => {
@@ -64,13 +76,13 @@ export default function CredentialTemplatesPage() {
               <p className="mt-2 text-xs text-gray-500 dark:text-slate-400">Used {template.usage} times</p>
             </div>
             <div className="mt-4 flex items-center gap-2">
-              <button className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
+              <button onClick={() => handlePreview(template.name)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
                 <Eye className="h-3.5 w-3.5" /> Preview
               </button>
-              <button className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
+              <button onClick={() => handleDuplicate(template.name)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
                 <Copy className="h-3.5 w-3.5" /> Duplicate
               </button>
-              <button className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
+              <button onClick={() => handleEdit(template.name)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">
                 <Edit className="h-3.5 w-3.5" /> Edit
               </button>
               <button

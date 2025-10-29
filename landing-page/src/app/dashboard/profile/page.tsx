@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { User, Shield, Lock, Laptop, Smartphone, Globe, ShieldCheck, XCircle } from "lucide-react";
+import { User, Shield, Lock, Laptop, Smartphone, Globe, ShieldCheck, XCircle, Wallet } from "lucide-react";
 import GlassAlert from "../GlassAlert";
 
 export default function ProfilePage() {
@@ -13,7 +13,35 @@ export default function ProfilePage() {
   const [form, setForm] = useState({ name: "Jane Doe", email: "jane@example.com", org: "Blockcred" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"}>({open:false, title:"", msg:"", variant:"success"});
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"|"info"|"warning"}>({open:false, title:"", msg:"", variant:"success"});
+
+  const handleConnectWallet = () => {
+    if (walletConnected) {
+      setWalletConnected(false);
+      setWalletAddress(null);
+      setOverlay({open:true, title:"Wallet disconnected", msg:"Disconnected from SUI wallet.", variant:"success"});
+    } else {
+      setWalletConnected(true);
+      setWalletAddress("0x1234...5678");
+      setOverlay({open:true, title:"Wallet connected", msg:"Successfully connected to SUI wallet.", variant:"success"});
+    }
+  };
+
+  const handleChangePassword = () => {
+    setOverlay({ open: true, title: "Password changed", msg: "Your password has been updated successfully.", variant: "success" });
+  };
+  const handleDisable2FA = () => {
+    setOverlay({ open: true, title: "2FA disabled", msg: "Two-factor authentication has been turned off.", variant: "success" });
+  };
+  const handleRevokeSession = (label: string) => {
+    setOverlay({ open: true, title: "Session revoked", msg: `Revoked access for ${label}.`, variant: "success" });
+  };
+
+  const handleOverlayClose = () => {
+    setOverlay(prev => ({ ...prev, open: false }));
+  };
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,8 +69,9 @@ export default function ProfilePage() {
         message={error ?? undefined}
         onClose={() => setError(null)}
         variant="error"
+      
       />
-      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg} variant={overlay.variant} onClose={()=>setOverlay(o=>({...o,open:false}))} />
+      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg} variant={overlay.variant} onClose={handleOverlayClose}  />
       {/* Header banner */}
       <header className="rounded-2xl bg-gradient-to-r from-[#3E4095] to-[#5a57d9] p-4 text-white shadow-sm">
         <div className="flex items-center gap-3">
@@ -60,12 +89,6 @@ export default function ProfilePage() {
       <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Editable details */}
         <div className={`${error ? "ring-1 ring-red-500/40" : ""} lg:col-span-2 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70`}>
-          {error && (
-            <div role="alert" className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-red-700 shadow-lg backdrop-blur dark:text-red-300">
-              <div className="text-sm font-medium">Save failed</div>
-              <div className="text-xs opacity-90">{error}</div>
-            </div>
-          )}
           <h2 className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-slate-100"><User className="h-4 w-4 text-[#3E4095]" /> Profile details</h2>
           <form onSubmit={onSubmit} className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="text-sm">
@@ -91,18 +114,37 @@ export default function ProfilePage() {
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
           <h2 className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-slate-100"><Shield className="h-4 w-4 text-[#3E4095]" /> Security</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">Update your password and manage two-factor auth.</p>
-          <button className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#3E4095] to-[#5a57d9] px-4 py-2 text-sm font-medium text-white shadow hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><Lock className="h-4 w-4" /> Change password</button>
+          <button onClick={handleChangePassword} className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#3E4095] to-[#5a57d9] px-4 py-2 text-sm font-medium text-white shadow hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><Lock className="h-4 w-4" /> Change password</button>
           <div className="mt-4 rounded-lg border border-dashed border-gray-200 p-3 text-sm dark:border-slate-800">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
               <span className="text-gray-700 dark:text-slate-300">Two-Factor Auth: <span className="font-medium text-emerald-600 dark:text-emerald-400">Enabled</span></span>
             </div>
-            <button className="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900"><XCircle className="h-3.5 w-3.5" /> Disable</button>
+            <button onClick={handleDisable2FA} className="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900"><XCircle className="h-3.5 w-3.5" /> Disable</button>
           </div>
         </div>
-      </section>
 
-      {/* Sessions */}
+        {/* Wallet Integration */}
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+          <h2 className="flex items-center gap-2 text-base font-medium text-gray-900 dark:text-slate-100"><Wallet className="h-4 w-4 text-[#3E4095]" /> Wallet</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">Connect your SUI wallet for secure credential verification.</p>
+          {walletConnected ? (
+            <div className="mt-4 rounded-lg border border-gray-200 p-3 text-sm dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Wallet className="h-4 w-4 text-emerald-500" />
+                <span className="text-gray-700 dark:text-slate-300">Connected: <span className="font-medium text-emerald-600 dark:text-emerald-400">{walletAddress}</span></span>
+              </div>
+              <button onClick={handleConnectWallet} className="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900 transition-colors">
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <button onClick={handleConnectWallet} className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#3E4095] to-[#5a57d9] px-4 py-2 text-sm font-medium text-white shadow hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095] transition-all">
+              Connect Wallet
+            </button>
+          )}
+        </div>
+      </section>
       <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
         <h2 className="text-base font-medium text-gray-900 dark:text-slate-100">Active sessions</h2>
         <div className="mt-3 divide-y divide-gray-100 text-sm dark:divide-slate-800">
@@ -113,7 +155,7 @@ export default function ProfilePage() {
                 <span>{s.label}</span>
                 <span className="text-xs text-gray-500 dark:text-slate-400">• {s.where}</span>
               </div>
-              <button className="rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">Revoke</button>
+              <button onClick={() => handleRevokeSession(s.label)} className="rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900">Revoke</button>
             </div>
           ))}
         </div>

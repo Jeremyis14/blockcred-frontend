@@ -11,9 +11,15 @@ export default function CredentialsPage() {
   function simulateImportError() {
     setTimeout(() => setError("CSV parser choked on vibes and commas. Try feeding it fewer mysteries."), 400);
   }
-  function simulateIssue() {
-    setOverlay({open:true, title:"Credential issued", msg:"Blockchain 101 sent to recipient.", variant:"success"});
+  function simulateImport() {
+    setOverlay({open:true, title:"Import successful", msg:"3 credentials imported from CSV.", variant:"success"});
   }
+  function simulateIssue() {
+    setOverlay({open:true, title:"Credential issued", msg:"New credential issued successfully.", variant:"success"});
+  }
+  const handleView = (name: string) => {
+    setOverlay({open:true, title:"Credential viewed", msg:`Viewing details for ${name}.`, variant:"success"});
+  };
   const handleApplyFilters = (filters: Record<string, string>) => {
     setAppliedFilters(filters);
     // Simulate applying filters
@@ -42,7 +48,7 @@ export default function CredentialsPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button onClick={simulateImportError} className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Upload className="h-4 w-4" /> Import CSV</button>
+            <button onClick={() => Math.random() > 0.5 ? simulateImport() : simulateImportError()} className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Upload className="h-4 w-4" /> Import CSV</button>
             <button onClick={simulateIssue} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#3E4095] shadow hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Plus className="h-4 w-4" /> Issue</button>
             <button className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><Filter className="h-4 w-4" /> Filters <ChevronDown className="h-4 w-4" /></button>
           </div>
@@ -88,7 +94,7 @@ export default function CredentialsPage() {
                     {i === 2 && <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs text-red-700 dark:bg-red-500/10 dark:text-red-300"><AlertCircle className="h-3.5 w-3.5" /> Failed</span>}
                   </td>
                   <td className="px-3 py-2 text-right">
-                    <button className="text-[#3E4095] hover:underline">View</button>
+                    <button onClick={() => handleView(name)} className="text-[#3E4095] hover:underline">View</button>
                   </td>
                 </tr>
               ))}

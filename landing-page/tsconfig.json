@@ -38,7 +38,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "src/app/Blog.tsx"  ],
+, "src/app/Blog.tsx", "../../Women On Sui/women-on-sui/src/app/ThemeProvider.tsx"  ],
   "exclude": [
     "node_modules"
   ]

@@ -6,10 +6,14 @@ import SavedViews from "../SavedViews";
 
 export default function VerificationsPage() {
   const [error, setError] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<{open:boolean; title:string; msg?:string; variant?:"error"|"success"}>({open:false, title:"", msg:"", variant:"success"});
   const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
   function simulateRefreshError() {
     setTimeout(() => setError("Our verifier took a coffee break. It promises to return stronger."), 350);
   }
+  const handleView = (credential: string) => {
+    setOverlay({open:true, title:"Verification viewed", msg:`Viewing details for ${credential}.`, variant:"success"});
+  };
   const handleApplyFilters = (filters: Record<string, string>) => {
     setAppliedFilters(filters);
     // Simulate applying filters
@@ -25,6 +29,7 @@ export default function VerificationsPage() {
         onClose={() => setError(null)}
         primaryAction={{ label: "Retry", onClick: () => { setError(null); alert("Refreshing verifications..."); } }}
       />
+      <GlassAlert open={overlay.open} title={overlay.title} message={overlay.msg} variant={overlay.variant} onClose={()=>setOverlay(o=>({...o,open:false}))} />
       <header className="rounded-2xl bg-gradient-to-r from-[#3E4095] to-[#5a57d9] p-4 text-white shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -81,7 +86,7 @@ export default function VerificationsPage() {
                     {i === 2 && <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs text-red-700 dark:bg-red-500/10 dark:text-red-300"><AlertTriangle className="h-3.5 w-3.5" /> Failed</span>}
                   </td>
                   <td className="px-3 py-2 text-right">
-                    <button className="text-[#3E4095] hover:underline">Details</button>
+                    <button onClick={() => handleView(name)} className="text-[#3E4095] hover:underline">Details</button>
                   </td>
                 </tr>
               ))}

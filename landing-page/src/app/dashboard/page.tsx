@@ -17,7 +17,10 @@ import {
 
 const THEME = "#3E4095";
 
+import dynamic from "next/dynamic";
+
 export default function DashboardPage() {
+  const WidgetGrid = dynamic(() => import("./widgets/WidgetGrid").then(m => m.WidgetGrid), { ssr: false });
 
   const kpis = [
     { label: "Issued", value: "1,248", delta: "+4.2%", trend: [6,8,7,9,11,10,12] },
@@ -30,21 +33,32 @@ export default function DashboardPage() {
         {/* Main content - rendered inside shared dashboard layout */}
         <div>
           {/* Greeting */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-slate-100">Welcome back</h1>
-              <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">Here’s a quick snapshot of your credentials.</p>
+          <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+            <div className="pointer-events-none absolute -z-10 inset-0 opacity-70" aria-hidden>
+              <div className="absolute left-1/3 top-0 h-24 w-24 rounded-full blur-2xl" style={{background: "#3E409522"}} />
+              <div className="absolute right-1/4 bottom-0 h-32 w-32 rounded-full blur-2xl" style={{background: "#5a57d944"}} />
             </div>
-            <div className="hidden items-center gap-2 sm:flex">
-              <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><FileDown className="h-4 w-4" /> Export</button>
-              <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><Share2 className="h-4 w-4" /> Share</button>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-slate-100">Welcome back</h1>
+                <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">Here’s a quick snapshot of your credentials.</p>
+              </div>
+              <div className="hidden items-center gap-2 sm:flex">
+                <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:-translate-y-0.5 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><FileDown className="h-4 w-4" /> Export</button>
+                <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:-translate-y-0.5 hover:bg-gray-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#3E4095]"><Share2 className="h-4 w-4" /> Share</button>
+              </div>
             </div>
           </div>
+
+          {/* Customizable Widgets */}
+          {/*<div className="mt-6">*/}
+          {/*  <WidgetGrid />*/}
+          {/*</div>*/}
 
           {/* KPI cards with sparklines */}
           <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
             {kpis.map((c) => (
-              <div key={c.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+              <div key={c.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/70">
                 <div className="text-sm text-gray-600 dark:text-slate-300">{c.label}</div>
                 <div className="mt-2 flex items-end justify-between">
                   <div className="text-2xl font-semibold text-gray-900 dark:text-slate-100">{c.value}</div>
@@ -141,8 +155,14 @@ function Sparkline({ values }: { values: number[] }) {
   const max = Math.max(...values);
   const pts = values.map((v, i) => `${(i/(values.length-1))*100},${100 - (v/max)*100}`).join(" ");
   return (
-    <svg className="mt-3 h-10 w-full text-[#5a57d9]" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <polyline fill="none" stroke="currentColor" strokeWidth="2" points={pts} />
+    <svg className="mt-3 h-10 w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="spark" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#3E4095" />
+          <stop offset="100%" stopColor="#5a57d9" />
+        </linearGradient>
+      </defs>
+      <polyline fill="none" stroke="url(#spark)" strokeWidth="2.5" strokeLinecap="round" points={pts} />
     </svg>
   );
 }

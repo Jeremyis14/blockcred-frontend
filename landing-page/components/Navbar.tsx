@@ -9,8 +9,8 @@ type NavItem = { name: string; href: string };
 const NAV_ITEMS: NavItem[] = [
   { name: "Features", href: "#features" },
   { name: "Blogs", href: "/blog" },     // <- keep /blog (root app route)
-  { name: "Pricing", href: "/pricing" }, // <- use /pricing (not /app/pricing)
-  { name: "Verify", href: "/verify" },   // <- new public verification page
+  { name: "Pricing", href: "/pricing" },
+  { name: "Verify", href: "/verify" },  // <- use /pricing (not /app/pricing)
   { name: "About", href: "#about" },
   { name: "Contact", href: "#contact" },
 ];

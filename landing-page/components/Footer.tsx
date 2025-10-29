@@ -2,12 +2,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import GlassAlert from "../src/app/dashboard/GlassAlert";
 
 const THEME = "#3E4095";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<null | "idle" | "sending" | "success" | "error">("idle");
+  const [alert, setAlert] = useState<{open:boolean; title:string; message?:string; variant?:"error"|"success"|"info"|"warning"}>({open:false, title:""});
 
   function validateEmail(e: string) {
     return /^\S+@\S+\.\S+$/.test(e);
@@ -17,6 +19,7 @@ export default function Footer() {
     e.preventDefault();
     if (!validateEmail(email)) {
       setStatus("error");
+      setAlert({ open: true, title: "Invalid email", message: "Please enter a valid email address.", variant: "error" });
       setTimeout(() => setStatus("idle"), 2200);
       return;
     }
@@ -25,6 +28,7 @@ export default function Footer() {
     setTimeout(() => {
       setStatus("success");
       setEmail("");
+      setAlert({ open: true, title: "Subscribed!", message: "You've been added to our newsletter.", variant: "success" });
       setTimeout(() => setStatus("idle"), 3000);
     }, 800);
   }
@@ -52,6 +56,15 @@ export default function Footer() {
 
   return (
     <footer className="bg-white border-t border-gray-100 dark:bg-slate-950 dark:border-slate-800">
+      <GlassAlert
+        open={alert.open}
+        title={alert.title}
+        message={alert.message}
+        variant={alert.variant}
+        onClose={() => setAlert(a=>({ ...a, open:false }))}
+        autoClose={2600}
+        position="bottom-right"
+      />
       <div className="px-6 mx-auto max-w-7xl py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Logo + short */}

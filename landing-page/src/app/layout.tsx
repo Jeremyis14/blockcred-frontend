@@ -32,22 +32,22 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+      <html lang="en">
       <body
-        className={openSans.className}
+          className={openSans.className}
       >
-        <ThemeProvider>
-          <NavigationPreloader minDelayMs={700} />
-          <PreloaderGate minDelayMs={1200}>
-            {children}
-          </PreloaderGate>
-        </ThemeProvider>
+      <ThemeProvider>
+        <NavigationPreloader minDelayMs={700} />
+        <PreloaderGate minDelayMs={1200}>
+          {children}
+        </PreloaderGate>
+      </ThemeProvider>
       </body>
-    </html>
+      </html>
   );
 }
