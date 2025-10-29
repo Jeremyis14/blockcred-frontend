@@ -20,7 +20,7 @@ const THEME = "#3E4095";
 import dynamic from "next/dynamic";
 
 export default function DashboardPage() {
-  const WidgetGrid = dynamic(() => import("./widgets/WidgetGrid").then(m => m.WidgetGrid), { ssr: false });
+  // const WidgetGrid = dynamic(() => import("./widgets/WidgetGrid").then(m => m.WidgetGrid), { ssr: false });
 
   const kpis = [
     { label: "Issued", value: "1,248", delta: "+4.2%", trend: [6,8,7,9,11,10,12] },

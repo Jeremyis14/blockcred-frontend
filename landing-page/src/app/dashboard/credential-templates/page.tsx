@@ -34,6 +34,10 @@ export default function CredentialTemplatesPage() {
     setOverlay({open:true, title:"Template created", msg:"New credential template saved successfully.", variant:"success"});
   };
 
+  function handleDuplicate(name: string) {
+    
+  }
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <GlassAlert
